@@ -1,2 +1,0 @@
-# quiniela-mundial
-quiniela mundia
