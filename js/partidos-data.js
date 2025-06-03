@@ -1,5 +1,5 @@
 window.partidosProgramados = [
-  "Partido 1: América vs Chivas",
+  "Partido 1: Pumas vs Chivas",
   "Partido 2: Chivas vs Tigres",
   "Partido 3: Monterrey vs Cruz Azul",
   "Partido 4: Toluca vs Santos",
