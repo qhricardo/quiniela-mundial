@@ -215,16 +215,6 @@ if (premioBox) {
           ${tds.join('')}
           <td>${total}</td>
         `;
-        // Luego los insertamos y coloreamos al de mayor puntaje
-filas.forEach(f => {
-  const temp = document.createElement('tbody');
-  temp.innerHTML = f.html;
-  const row = temp.firstElementChild;
-
-  if (f.puntos === maxPuntos) {
-    row.style.backgroundColor = '#D0E8FF';  // azul claro
-    row.style.fontWeight = 'bold';
-  }
         tbody.appendChild(fila);
       }
     }
