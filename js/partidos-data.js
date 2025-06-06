@@ -1,12 +1,12 @@
 window.partidosProgramados = [
   "Partido 1: Mexico 0vs Republica Dominicana 0",
-  "Partido 2: USA vs Trinidad y Tobago",
-  "Partido 3: Haiti vs Arabia Saudita",
-  "Partido 4: Costa Rica vs Surinam",
-  "Partido 5: Panama vs Guadalupe",
-  "Partido 6: Jamaica vs Guatemala",
-  "Partido 7: Curazao vs Salvador",
-  "Partido 8: Canada vs Honduras",
-  "Partido 9: Costa Rica vs Republica Dominicana",
-  "Partido 10: Surinam vs Mexico"
+  "Partido 2: Al Ahly CF vs Inter Miami CF",
+  "Partido 3: Estados Unidos vs Trinidad y Tobago",
+  "Partido 4: Haití  vs Arabia Saudí",
+  "Partido 5: Costa Rica vs Surinam ",
+  "Partido 6: PSG   vs At. Madrid",
+  "Partido 7: Palmeiras  vs FC Porto",
+  "Partido 8: FC Bayern vs Auckland City ",
+  "Partido 9: Botafogo  vs Seattle Sounders ",
+  "Partido 10: Chelsea  vs Los Angeles FC "
 ];
