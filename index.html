@@ -341,7 +341,7 @@
     <script>
         const db = firebase.firestore();
         let currentUser = null;
-        let userCredits = 1;
+        let userCredits = 0;
 
         // Manejar estado de autenticación
         firebase.auth().onAuthStateChanged(async (user) => {
@@ -356,7 +356,7 @@ const userDoc = await db.collection('users').doc(user.uid).get();
 
 if (userDoc.exists) {
     const userData = userDoc.data();
-    userCredits = userData.creditos ?? 1;
+    userCredits = userData.creditos ?? 0;
     document.getElementById('username').textContent = `${userData.name || user.email} | Créditos: ${userCredits}`;
 } else {
     document.getElementById('username').textContent = user.email;
