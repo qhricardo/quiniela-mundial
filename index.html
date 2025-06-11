@@ -341,7 +341,7 @@
     <script>
         const db = firebase.firestore();
         let currentUser = null;
-        let userCredits = 0;
+        let userCredits = 1;
 
         // Manejar estado de autenticación
         firebase.auth().onAuthStateChanged(async (user) => {
