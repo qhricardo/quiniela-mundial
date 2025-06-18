@@ -78,6 +78,26 @@
       border-bottom: 1px solid #eee;
       text-align: center;
     }
+    #tablaGanadores td, #tablaGanadores th {
+      text-align: center;
+      padding: 8px;
+      border: 1px solid #ccc;
+    }
+
+    #tablaGanadores tr.primer-lugar {
+      background-color: #ffe08a;
+      font-weight: bold;
+    }
+
+    #tablaGanadores tr.segundo-lugar {
+      background-color: #cfe2f3;
+    }
+
+    #tablaGanadores {
+      margin-top: 15px;
+      border-collapse: collapse;
+      width: 350px;
+    }
   </style>
 </head>
 <body>
@@ -86,95 +106,31 @@
     <h2>Resultados de Todos los Usuarios</h2>
     <button id="logout-btn">Cerrar Sesión</button>
   </div>
+
   <div style="text-align: center; margin-top: 30px;">
     <button onclick="window.location.href='index.html'" style="padding: 10px 20px; background-color: #006847; color: white; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">
         ⬅️ Regresar a Pronósticos
     </button>
-</div>
+  </div>
+
   <div id="premio-box" style="margin: 20px auto; width: 90%; max-width: 600px; background: #fff; border: 2px solid #006847; padding: 15px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); text-align: center;">
-  <h3 style="color: #006847; margin: 0;">🏆 Premio Acumulado</h3>
-  <p id="premio-total" style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0;">$0.00 MXN</p>
-  </p>En caso de empate en total de puntos el premio se divide entre los ganadores</p>
-</div>
-<h2>Ganadores</h2>
-<table id="tablaGanadores">
-  <thead>
-    <tr>
-      <th>Lugar</th>
-      <th>Usuario</th>
-      <th>Total</th>
-    </tr>
-  </thead>
-  <tbody></tbody>
-</table>
+    <h3 style="color: #006847; margin: 0;">🏆 Premio Acumulado</h3>
+    <p id="premio-total" style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0;">$0.00 MXN</p>
+    <p>En caso de empate en total de puntos el premio se divide entre los ganadores</p>
+  </div>
 
-<style>
-  #tablaGanadores td, #tablaGanadores th {
-    text-align: center;
-    padding: 8px;
-    border: 1px solid #ccc;
-  }
-
-  #tablaGanadores tr.primer-lugar {
-    background-color: #ffe08a; /* dorado claro */
-    font-weight: bold;
-  }
-
-  #tablaGanadores tr.segundo-lugar {
-    background-color: #cfe2f3; /* azul claro */
-  }
-
-  #tablaGanadores {
-    margin-top: 15px;
-    border-collapse: collapse;
-    width: 350px;
-  }
-</style>
-
-<script>
-  const filas = document.querySelectorAll("#tablaResultados tbody tr");
-  const datos = [];
-
-  // Extraer datos de la tabla principal
-  filas.forEach(fila => {
-    const columnas = fila.querySelectorAll("td");
-    const usuario = columnas[0].innerText;
-    const total = parseInt(columnas[3].innerText);
-    datos.push({ usuario, total });
-  });
-
-  datos.sort((a, b) => b.total - a.total);
-
-  const tablaGanadores = document.querySelector("#tablaGanadores tbody");
-
-  const primerLugarPuntaje = datos[0].total;
-  const segundoLugarPuntaje = datos.find(u => u.total < primerLugarPuntaje)?.total;
-
-  // Añadir primer lugar(es) 🥇
-  datos.filter(u => u.total === primerLugarPuntaje).forEach(u => {
-    tablaGanadores.innerHTML += `
-      <tr class="primer-lugar">
-        <td>🥇 1er Lugar</td>
-        <td>${u.usuario}</td>
-        <td>${u.total}</td>
+  <h2>Ganadores</h2>
+  <table id="tablaGanadores">
+    <thead>
+      <tr>
+        <th>Lugar</th>
+        <th>Usuario</th>
+        <th>Total</th>
       </tr>
-    `;
-  });
+    </thead>
+    <tbody></tbody>
+  </table>
 
-  // Añadir segundo lugar(es) 🥈
-  if (segundoLugarPuntaje !== undefined) {
-    datos.filter(u => u.total === segundoLugarPuntaje).forEach(u => {
-      tablaGanadores.innerHTML += `
-        <tr class="segundo-lugar">
-          <td>🥈 2do Lugar</td>
-          <td>${u.usuario}</td>
-          <td>${u.total}</td>
-        </tr>
-      `;
-    });
-  }
-</script>
-  <!-- Recuadro informativo de partidos -->
   <div id="partidos-info" class="partidos-cuadro">
     <h3>Partidos Programados</h3>
     <ul id="lista-partidos"></ul>
@@ -211,20 +167,13 @@
         <th>Total</th>
       </tr>
     </thead>
-    <tbody id="resultados-body">
-      <!-- Contenido dinámico -->
-    </tbody>
+    <tbody id="resultados-body"></tbody>
   </table>
 
-  <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
-
-  <!-- Configuración de Firebase -->
   <script src="js/firebase-config.js"></script>
-
-  <!-- Cargar partidos desde archivo externo -->
   <script src="js/partidos-data.js"></script>
 
   <script>
@@ -233,21 +182,15 @@
 
     async function cargarResultados() {
       const snapshot = await db.collection('pronosticos').orderBy('fecha', 'desc').get();
-     
-      // Cálculo de premio acumulado
-const totalPronosticos = snapshot.size;
-const montoTotal = totalPronosticos * 25;
-const premioFinal = montoTotal * 0.8;
-
-const premioBox = document.getElementById('premio-total');
-if (premioBox) {
-  premioBox.textContent = `$${premioFinal.toFixed(2)} MXN`;
-}
+      const totalPronosticos = snapshot.size;
+      const montoTotal = totalPronosticos * 25;
+      const premioFinal = montoTotal * 0.8;
+      document.getElementById('premio-total').textContent = `$${premioFinal.toFixed(2)} MXN`;
 
       const resultadosOficiales = {};
       for (let i = 1; i <= 10; i++) {
         const val = document.getElementById(`res-${i}`).value.toUpperCase();
-        if (['L','E','V'].includes(val)) resultadosOficiales[i] = val;
+        if (["L","E","V"].includes(val)) resultadosOficiales[i] = val;
       }
 
       tbody.innerHTML = '';
@@ -294,6 +237,50 @@ if (premioBox) {
         `;
         tbody.appendChild(fila);
       }
+
+      actualizarGanadores();
+    }
+
+    function actualizarGanadores() {
+      const filas = document.querySelectorAll("#resultados-body tr");
+      const datos = [];
+
+      filas.forEach(fila => {
+        const columnas = fila.querySelectorAll("td");
+        const usuario = columnas[0].innerText;
+        const total = parseInt(columnas[columnas.length - 1].innerText);
+        datos.push({ usuario, total });
+      });
+
+      datos.sort((a, b) => b.total - a.total);
+      const tablaGanadores = document.querySelector("#tablaGanadores tbody");
+      tablaGanadores.innerHTML = "";
+      if (datos.length === 0) return;
+
+      const primerLugarPuntaje = datos[0].total;
+      const segundoLugarPuntaje = datos.find(u => u.total < primerLugarPuntaje)?.total;
+
+      datos.filter(u => u.total === primerLugarPuntaje).forEach(u => {
+        tablaGanadores.innerHTML += `
+          <tr class="primer-lugar">
+            <td>🥇 1er Lugar</td>
+            <td>${u.usuario}</td>
+            <td>${u.total}</td>
+          </tr>
+        `;
+      });
+
+      if (segundoLugarPuntaje !== undefined) {
+        datos.filter(u => u.total === segundoLugarPuntaje).forEach(u => {
+          tablaGanadores.innerHTML += `
+            <tr class="segundo-lugar">
+              <td>🥈 2do Lugar</td>
+              <td>${u.usuario}</td>
+              <td>${u.total}</td>
+            </tr>
+          `;
+        });
+      }
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -303,7 +290,6 @@ if (premioBox) {
         document.getElementById(`res-${i}`).addEventListener('input', cargarResultados);
       }
 
-      // Mostrar partidos desde partidos-data.js
       const lista = document.getElementById('lista-partidos');
       if (window.partidosProgramados && lista) {
         lista.innerHTML = '';
@@ -323,5 +309,6 @@ if (premioBox) {
   </script>
 </body>
 </html>
+
 
 
