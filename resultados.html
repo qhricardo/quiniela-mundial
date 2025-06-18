@@ -96,7 +96,84 @@
   <p id="premio-total" style="font-size: 24px; font-weight: bold; margin: 10px 0 0 0;">$0.00 MXN</p>
   </p>En caso de empate en total de puntos el premio se divide entre los ganadores</p>
 </div>
+<h2>Ganadores</h2>
+<table id="tablaGanadores">
+  <thead>
+    <tr>
+      <th>Lugar</th>
+      <th>Usuario</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
 
+<style>
+  #tablaGanadores td, #tablaGanadores th {
+    text-align: center;
+    padding: 8px;
+    border: 1px solid #ccc;
+  }
+
+  #tablaGanadores tr.primer-lugar {
+    background-color: #ffe08a; /* dorado claro */
+    font-weight: bold;
+  }
+
+  #tablaGanadores tr.segundo-lugar {
+    background-color: #cfe2f3; /* azul claro */
+  }
+
+  #tablaGanadores {
+    margin-top: 15px;
+    border-collapse: collapse;
+    width: 350px;
+  }
+</style>
+
+<script>
+  const filas = document.querySelectorAll("#tablaResultados tbody tr");
+  const datos = [];
+
+  // Extraer datos de la tabla principal
+  filas.forEach(fila => {
+    const columnas = fila.querySelectorAll("td");
+    const usuario = columnas[0].innerText;
+    const total = parseInt(columnas[3].innerText);
+    datos.push({ usuario, total });
+  });
+
+  datos.sort((a, b) => b.total - a.total);
+
+  const tablaGanadores = document.querySelector("#tablaGanadores tbody");
+
+  const primerLugarPuntaje = datos[0].total;
+  const segundoLugarPuntaje = datos.find(u => u.total < primerLugarPuntaje)?.total;
+
+  // Añadir primer lugar(es) 🥇
+  datos.filter(u => u.total === primerLugarPuntaje).forEach(u => {
+    tablaGanadores.innerHTML += `
+      <tr class="primer-lugar">
+        <td>🥇 1er Lugar</td>
+        <td>${u.usuario}</td>
+        <td>${u.total}</td>
+      </tr>
+    `;
+  });
+
+  // Añadir segundo lugar(es) 🥈
+  if (segundoLugarPuntaje !== undefined) {
+    datos.filter(u => u.total === segundoLugarPuntaje).forEach(u => {
+      tablaGanadores.innerHTML += `
+        <tr class="segundo-lugar">
+          <td>🥈 2do Lugar</td>
+          <td>${u.usuario}</td>
+          <td>${u.total}</td>
+        </tr>
+      `;
+    });
+  }
+</script>
   <!-- Recuadro informativo de partidos -->
   <div id="partidos-info" class="partidos-cuadro">
     <h3>Partidos Programados</h3>
