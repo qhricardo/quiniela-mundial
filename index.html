@@ -3,255 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quiniela360 | Grupos</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      color: #333;
-    }
-
-    header {
-      background: #006847;
-      color: white;
-      padding: 15px;
-      text-align: center;
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 20px auto;
-      padding: 10px;
-    }
-
-    .btn-nuevo {
-      display: inline-block;
-      background: #006847;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    .btn-nuevo:hover {
-      background: #004d36;
-    }
-
-    .grupos-lista {
-      margin-top: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 15px;
-    }
-
-    .grupo-card {
-      background: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 15px;
-      transition: 0.3s;
-    }
-    .grupo-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-    }
-    .grupo-card h3 {
-      margin: 0 0 10px;
-      color: #006847;
-    }
-    .grupo-card p {
-      margin: 5px 0;
-      font-size: 14px;
-    }
-    .grupo-card button {
-      margin-top: 10px;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 6px;
-      background: #007BFF;
-      color: white;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.3s;
-    }
-    .grupo-card button:hover {
-      background: #0056b3;
-    }
-
-    /* ======== MODAL CREAR GRUPO ======== */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      animation: aparecer 0.3s ease;
-    }
-    @keyframes aparecer {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .modal-content h2 {
-      margin-top: 0;
-      color: #006847;
-    }
-    .modal-content label {
-      display: block;
-      margin-top: 10px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .modal-content input,
-    .modal-content select,
-    .modal-content textarea {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    .modal-buttons {
-      margin-top: 15px;
-      display: flex;
-      justify-content: space-between;
-    }
-    .btn-ok {
-      background: #006847;
-      color: white;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .btn-cancel {
-      background: #ccc;
-      color: #333;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-  </style>
+  <title>Quiniela360 | Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-
   <header>
-    Bienvenido a Quiniela360 🎉
+    <h1>Bienvenido a Quiniela360</h1>
+    <div id="user-info"></div>
+    <div id="creditos"></div>
   </header>
 
-  <div class="container">
-    <a href="#" class="btn-nuevo" onclick="abrirModal()">➕ Crear Grupo</a>
+  <main>
+    <section id="crear-grupo">
+      <h2>Crear Nuevo Grupo</h2>
+      <input type="text" id="nombreGrupo" placeholder="Nombre del grupo">
+      <button id="btnCrearGrupo">Crear Grupo</button>
+    </section>
 
-    <div class="grupos-lista" id="gruposLista">
-      <!-- Tarjetas iniciales -->
-      <div class="grupo-card">
-        <h3>Amigos del Barrio</h3>
-        <p><b>Creador:</b> Richar</p>
-        <p><b>Participantes:</b> 8</p>
-        <p><b>Estado:</b> Abierto</p>
-        <button onclick="ingresarPronostico()">Ingresar Pronóstico</button>
-      </div>
+    <section id="lista-grupos">
+      <h2>Grupos Disponibles</h2>
+      <ul id="grupos"></ul>
+    </section>
+  </main>
 
-      <div class="grupo-card">
-        <h3>Oficina MX</h3>
-        <p><b>Creador:</b> Ana</p>
-        <p><b>Participantes:</b> 12</p>
-        <p><b>Estado:</b> En juego</p>
-        <button onclick="ingresarPronostico()">Ingresar Pronóstico</button>
-      </div>
-    </div>
-  </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
 
-  <!-- Modal Crear Grupo -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h2>Crear Grupo de Quiniela</h2>
-      <label>Nombre del Grupo</label>
-      <input type="text" id="nombreGrupo" placeholder="Ej. Jornada 10 - Liga MX">
+    const firebaseConfig = {
+      apiKey: "TU_API_KEY",
+      authDomain: "TU_PROJECT_ID.firebaseapp.com",
+      projectId: "TU_PROJECT_ID",
+      storageBucket: "TU_PROJECT_ID.appspot.com",
+      messagingSenderId: "ID",
+      appId: "APP_ID"
+    };
 
-      <label>Acceso</label>
-      <select id="tipoAcceso">
-        <option>Público</option>
-        <option>Privado (con código)</option>
-      </select>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
 
-      <label>Monto de entrada</label>
-      <input type="number" id="monto" placeholder="$0 si es gratis">
+    const userInfo = document.getElementById("user-info");
+    const creditosDiv = document.getElementById("creditos");
+    const listaGrupos = document.getElementById("grupos");
 
-      <label>Fecha límite</label>
-      <input type="datetime-local" id="fechaLimite">
+    let usuarioActual = null;
 
-      <label>Reglas</label>
-      <textarea id="reglas" rows="3" placeholder="Describe las reglas de tu grupo..."></textarea>
-
-      <div class="modal-buttons">
-        <button class="btn-ok" onclick="crearGrupo()">Crear Grupo</button>
-        <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    function abrirModal() {
-      document.getElementById('modal').style.display = 'flex';
-    }
-    function cerrarModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
-
-    function ingresarPronostico() {
-      window.location.href = "indexdos.html";
-    }
-
-    function crearGrupo() {
-      const nombre = document.getElementById("nombreGrupo").value.trim();
-      const acceso = document.getElementById("tipoAcceso").value;
-      const monto = document.getElementById("monto").value || "Gratis";
-      const fecha = document.getElementById("fechaLimite").value;
-      const reglas = document.getElementById("reglas").value.trim();
-
-      if (nombre === "") {
-        alert("Debes poner un nombre para el grupo");
-        return;
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        usuarioActual = user;
+        userInfo.innerText = `Usuario: ${user.email}`;
+        creditosDiv.innerText = `Créditos: 100`; // aquí puedes leer de una colección "usuarios"
+        await cargarGrupos();
+      } else {
+        window.location.href = "login.html";
       }
+    });
 
-      // Crear tarjeta
-      const nuevoGrupo = document.createElement("div");
-      nuevoGrupo.classList.add("grupo-card");
-      nuevoGrupo.innerHTML = `
-        <h3>${nombre}</h3>
-        <p><b>Creador:</b> Tú</p>
-        <p><b>Acceso:</b> ${acceso}</p>
-        <p><b>Monto:</b> ${monto}</p>
-        <p><b>Fecha límite:</b> ${fecha || "No definida"}</p>
-        <button onclick="ingresarPronostico()">Ingresar Pronóstico</button>
-      `;
-
-      document.getElementById("gruposLista").appendChild(nuevoGrupo);
-
-      // Limpiar formulario y cerrar modal
-      document.getElementById("nombreGrupo").value = "";
-      document.getElementById("monto").value = "";
-      document.getElementById("fechaLimite").value = "";
-      document.getElementById("reglas").value = "";
-      cerrarModal();
+    async function cargarGrupos() {
+      listaGrupos.innerHTML = "";
+      const querySnapshot = await getDocs(collection(db, "grupos"));
+      querySnapshot.forEach((doc) => {
+        const grupo = doc.data();
+        const li = document.createElement("li");
+        li.innerHTML = `
+          <span>${grupo.nombre}</span>
+          <button onclick="ingresarPronostico('${doc.id}')">Ingresar Pronóstico</button>
+        `;
+        listaGrupos.appendChild(li);
+      });
     }
-  </script>
 
+    document.getElementById("btnCrearGrupo").addEventListener("click", async () => {
+      const nombre = document.getElementById("nombreGrupo").value;
+      if (!nombre) return alert("Escribe un nombre para el grupo");
+
+      await addDoc(collection(db, "grupos"), {
+        nombre,
+        creador: usuarioActual.uid,
+        creadoEn: new Date()
+      });
+
+      alert("Grupo creado en Firebase");
+      document.getElementById("nombreGrupo").value = "";
+      await cargarGrupos();
+    });
+
+    window.ingresarPronostico = function (grupoId) {
+      localStorage.setItem("grupoActivo", grupoId);
+      window.location.href = "indexdos.html";
+    };
+  </script>
 </body>
 </html>
