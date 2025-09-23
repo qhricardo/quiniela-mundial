@@ -5,380 +5,137 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiniela360 | Grupos</title>
   <style>
-    /* ======== ESTILOS GENERALES ======== */
     body {
-      margin: 0;
       font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
       background: #f4f6f9;
-      color: #333;
     }
-
     header {
       background: #006847;
       color: white;
-      padding: 12px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 16px;
-      font-weight: bold;
-    }
-
-    .header-left {
+      padding: 15px;
+      text-align: center;
       font-size: 20px;
     }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
-
-    .usuario-info {
-      background: rgba(255, 255, 255, 0.2);
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .btn-logout {
-      background: #ce1126;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    .btn-logout:hover {
-      background: #a50d1e;
-    }
-
     .container {
       max-width: 900px;
       margin: 20px auto;
-      padding: 10px;
-    }
-
-    /* ======== BOTÓN CREAR GRUPO ======== */
-    .btn-nuevo {
-      display: inline-block;
-      background: #006847;
-      color: white;
-      padding: 12px 20px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-    .btn-nuevo:hover {
-      background: #004d36;
-    }
-
-    /* ======== TARJETAS DE GRUPOS ======== */
-    .grupos-lista {
-      margin-top: 20px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 15px;
-    }
-
-    .grupo-card {
+      padding: 20px;
       background: white;
       border-radius: 10px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      padding: 15px;
-      transition: 0.3s;
     }
-    .grupo-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    h2 {
+      margin-bottom: 15px;
+      color: #333;
     }
-    .grupo-card h3 {
-      margin: 0 0 10px;
-      color: #006847;
-    }
-    .grupo-card p {
-      margin: 5px 0;
-      font-size: 14px;
-    }
-    .grupo-card button {
-      margin-top: 10px;
-      padding: 8px 12px;
-      border: none;
-      border-radius: 6px;
-      background: #ce1126;
-      color: white;
-      cursor: pointer;
-      font-size: 14px;
-      transition: 0.3s;
-    }
-    .grupo-card button:hover {
-      background: #a50d1e;
-    }
-
-    /* ======== MODAL CREAR GRUPO ======== */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6);
-      justify-content: center;
-      align-items: center;
-    }
-    .modal-content {
-      background: white;
-      padding: 20px;
-      border-radius: 12px;
-      max-width: 400px;
-      width: 90%;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-      animation: aparecer 0.3s ease;
-    }
-    @keyframes aparecer {
-      from { transform: scale(0.9); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .modal-content h2 {
-      margin-top: 0;
-      color: #006847;
-    }
-    .modal-content label {
-      display: block;
-      margin-top: 10px;
-      font-size: 14px;
-      font-weight: bold;
-    }
-    .modal-content input,
-    .modal-content select,
-    .modal-content textarea {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-    .modal-buttons {
-      margin-top: 15px;
+    .form-grupo {
       display: flex;
-      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 20px;
     }
-    .btn-ok {
+    .form-grupo input {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .form-grupo button {
+      padding: 10px 20px;
       background: #006847;
       color: white;
       border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    .btn-cancel {
-      background: #ccc;
-      color: #333;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    /* ======== VISTA INTERNA DEL GRUPO ======== */
-    .grupo-interno {
-      display: none;
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-    }
-    .grupo-interno h2 {
-      margin-top: 0;
-      color: #006847;
-    }
-    .acciones-grupo {
-      margin-top: 15px;
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-    .acciones-grupo button {
-      flex: 1;
-      padding: 10px;
-      border: none;
       border-radius: 8px;
       cursor: pointer;
-      font-weight: bold;
-      transition: 0.3s;
+      transition: background 0.3s;
     }
-    .btn-pronostico { background: #006847; color: white; }
-    .btn-invitar { background: #0077cc; color: white; }
-    .btn-resultados { background: #ce1126; color: white; }
-    .acciones-grupo button:hover { opacity: 0.85; }
-
-    .participantes {
-      margin-top: 20px;
+    .form-grupo button:hover {
+      background: #004d33;
     }
-    .participantes h3 {
-      margin-bottom: 10px;
-    }
-    .participantes ul {
+    .grupo-lista {
       list-style: none;
       padding: 0;
     }
-    .participantes li {
-      padding: 8px;
-      background: #f4f6f9;
+    .grupo-item {
+      background: #f9f9f9;
+      margin: 10px 0;
+      padding: 15px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid #ddd;
+    }
+    .grupo-info {
+      font-size: 16px;
+      font-weight: bold;
+      color: #333;
+    }
+    .grupo-actions button {
+      padding: 8px 15px;
+      border: none;
       border-radius: 6px;
-      margin-bottom: 6px;
-      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+      margin-left: 5px;
+    }
+    .btn-ingresar {
+      background: #007BFF;
+      color: white;
+    }
+    .btn-ingresar:hover {
+      background: #0056b3;
     }
   </style>
 </head>
 <body>
-
-  <header>
-    <div class="header-left">Quiniela360 🎉</div>
-    <div class="header-right">
-      <div class="usuario-info">👤 Richar | 💰 Créditos: 120</div>
-      <button class="btn-logout" onclick="cerrarSesion()">Cerrar Sesión</button>
-    </div>
-  </header>
+  <header>Bienvenido a Quiniela360 - Grupos</header>
 
   <div class="container">
-
-    <!-- Vista lista de grupos -->
-    <div id="vista-grupos">
-      <a href="#" class="btn-nuevo" onclick="abrirModal()">➕ Crear Grupo</a>
-
-      <div id="listaGrupos" class="grupos-lista">
-        <div class="grupo-card">
-          <h3>Amigos del Barrio</h3>
-          <p><b>Creador:</b> Richar</p>
-          <p><b>Participantes:</b> 8</p>
-          <p><b>Estado:</b> Abierto</p>
-          <button onclick="entrarGrupo('Amigos del Barrio')">Entrar</button>
-        </div>
-      </div>
+    <h2>Crear nuevo grupo</h2>
+    <div class="form-grupo">
+      <input type="text" id="nombreGrupo" placeholder="Nombre del grupo">
+      <button onclick="crearGrupo()">Crear</button>
     </div>
 
-    <!-- Vista interna de grupo -->
-<div id="vista-interna" class="grupo-interno">
-  <h2 id="grupoTitulo">Grupo</h2>
-  <p><b>Creador:</b> Richar</p>
-  <p><b>Reglas:</b> Cada participante debe ingresar su pronóstico antes del cierre.</p>
-  <p><b>Fecha límite:</b> 2025-09-30 20:00 hrs</p>
-
-  <div class="acciones-grupo">
-    <button class="btn-pronostico" onclick="irPronosticos()">📝 Ingresar Pronósticos</button>
-    <button class="btn-invitar">👥 Invitar Amigos</button>
-    <button class="btn-resultados">📊 Ver Resultados</button>
-    <button onclick="volverGrupos()">⬅️ Volver</button>
-  </div>
-
-  <div class="participantes">
-    <h3>Participantes</h3>
-    <ul id="listaParticipantes">
-      <li>Richar ✅ Pronóstico enviado</li>
-      <li>Ana ⏳ Pendiente</li>
-      <li>Carlos ✅ Pronóstico enviado</li>
-    </ul>
-  </div>
-</div>
-
-
-  </div>
-
-  <!-- Modal Crear Grupo -->
-  <div id="modal" class="modal">
-    <div class="modal-content">
-      <h2>Crear Grupo de Quiniela</h2>
-      <label>Nombre del Grupo</label>
-      <input type="text" id="nombreGrupo" placeholder="Ej. Jornada 10 - Liga MX">
-
-      <label>Acceso</label>
-      <select id="accesoGrupo">
-        <option>Público</option>
-        <option>Privado (con código)</option>
-      </select>
-
-      <label>Monto de entrada</label>
-      <input type="number" id="montoGrupo" placeholder="$0 si es gratis">
-
-      <label>Fecha límite</label>
-      <input type="datetime-local" id="fechaGrupo">
-
-      <label>Reglas</label>
-      <textarea id="reglasGrupo" rows="3" placeholder="Describe las reglas de tu grupo..."></textarea>
-
-      <div class="modal-buttons">
-        <button class="btn-ok" onclick="crearGrupo()">Crear Grupo</button>
-        <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
-      </div>
-    </div>
+    <h2>Mis grupos</h2>
+    <ul class="grupo-lista" id="grupoLista"></ul>
   </div>
 
   <script>
-    function abrirModal() {
-      document.getElementById('modal').style.display = 'flex';
-    }
-    function cerrarModal() {
-      document.getElementById('modal').style.display = 'none';
-    }
+    const grupoLista = document.getElementById("grupoLista");
+    const grupos = [];
 
-    // Crear nuevo grupo dinámicamente
     function crearGrupo() {
-      const nombre = document.getElementById('nombreGrupo').value;
-      const acceso = document.getElementById('accesoGrupo').value;
-      const monto = document.getElementById('montoGrupo').value;
-      const fecha = document.getElementById('fechaGrupo').value;
-      const reglas = document.getElementById('reglasGrupo').value;
-
-      if (!nombre) {
-        alert("Por favor ingresa un nombre para el grupo.");
-        return;
+      const nombre = document.getElementById("nombreGrupo").value.trim();
+      if (nombre) {
+        grupos.push(nombre);
+        mostrarGrupos();
+        document.getElementById("nombreGrupo").value = "";
+      } else {
+        alert("Por favor ingresa un nombre para el grupo");
       }
-
-      const lista = document.getElementById('listaGrupos');
-      const nuevoGrupo = document.createElement('div');
-      nuevoGrupo.className = 'grupo-card';
-      nuevoGrupo.innerHTML = `
-        <h3>${nombre}</h3>
-        <p><b>Creador:</b> Tú</p>
-        <p><b>Participantes:</b> 1</p>
-        <p><b>Estado:</b> Abierto</p>
-        <button onclick="entrarGrupo('${nombre}')">Entrar</button>
-      `;
-      lista.appendChild(nuevoGrupo);
-
-      cerrarModal();
     }
 
-    // Cambiar a vista interna
-    function entrarGrupo(nombre) {
-      document.getElementById('vista-grupos').style.display = 'none';
-      document.getElementById('vista-interna').style.display = 'block';
-      document.getElementById('grupoTitulo').innerText = nombre;
+    function mostrarGrupos() {
+      grupoLista.innerHTML = "";
+      grupos.forEach((grupo, index) => {
+        const li = document.createElement("li");
+        li.classList.add("grupo-item");
+        li.innerHTML = `
+          <span class="grupo-info">${grupo}</span>
+          <div class="grupo-actions">
+            <button class="btn-ingresar" onclick="ingresarPronostico()">Ingresar Pronóstico</button>
+          </div>
+        `;
+        grupoLista.appendChild(li);
+      });
     }
 
-    // Volver a lista de grupos
-    function volverGrupos() {
-      document.getElementById('vista-interna').style.display = 'none';
-      document.getElementById('vista-grupos').style.display = 'block';
+    function ingresarPronostico() {
+      window.location.href = "indexdos.html";
     }
-
-    // Cerrar sesión (simulado)
-    function cerrarSesion() {
-      alert("Cerrando sesión...");
-      window.location.href = "login.html";
-    }
-    // Redirigir al formulario de pronósticos
-function irPronosticos() {
-  window.location.href = "indexdos.html";
-}
   </script>
-
 </body>
 </html>
-
-
