@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiniela360 | Grupos</title>
   <style>
-    /* ======== ESTILOS GENERALES ======== */
     body {
       margin: 0;
       font-family: Arial, sans-serif;
@@ -28,7 +27,6 @@
       padding: 10px;
     }
 
-    /* ======== BOTÓN CREAR GRUPO ======== */
     .btn-nuevo {
       display: inline-block;
       background: #006847;
@@ -43,7 +41,6 @@
       background: #004d36;
     }
 
-    /* ======== TARJETAS DE GRUPOS ======== */
     .grupos-lista {
       margin-top: 20px;
       display: grid;
@@ -75,19 +72,19 @@
       padding: 8px 12px;
       border: none;
       border-radius: 6px;
-      background: #ce1126;
+      background: #007BFF;
       color: white;
       cursor: pointer;
       font-size: 14px;
       transition: 0.3s;
     }
     .grupo-card button:hover {
-      background: #a50d1e;
+      background: #0056b3;
     }
 
     /* ======== MODAL CREAR GRUPO ======== */
     .modal {
-      display: none; /* Oculto por defecto */
+      display: none;
       position: fixed;
       top: 0; left: 0;
       width: 100%; height: 100%;
@@ -160,14 +157,14 @@
   <div class="container">
     <a href="#" class="btn-nuevo" onclick="abrirModal()">➕ Crear Grupo</a>
 
-    <div class="grupos-lista">
-      <!-- Tarjeta de ejemplo -->
+    <div class="grupos-lista" id="gruposLista">
+      <!-- Tarjetas iniciales -->
       <div class="grupo-card">
         <h3>Amigos del Barrio</h3>
         <p><b>Creador:</b> Richar</p>
         <p><b>Participantes:</b> 8</p>
         <p><b>Estado:</b> Abierto</p>
-        <button>Entrar</button>
+        <button onclick="ingresarPronostico()">Ingresar Pronóstico</button>
       </div>
 
       <div class="grupo-card">
@@ -175,7 +172,7 @@
         <p><b>Creador:</b> Ana</p>
         <p><b>Participantes:</b> 12</p>
         <p><b>Estado:</b> En juego</p>
-        <button>Entrar</button>
+        <button onclick="ingresarPronostico()">Ingresar Pronóstico</button>
       </div>
     </div>
   </div>
@@ -185,25 +182,25 @@
     <div class="modal-content">
       <h2>Crear Grupo de Quiniela</h2>
       <label>Nombre del Grupo</label>
-      <input type="text" placeholder="Ej. Jornada 10 - Liga MX">
+      <input type="text" id="nombreGrupo" placeholder="Ej. Jornada 10 - Liga MX">
 
       <label>Acceso</label>
-      <select>
+      <select id="tipoAcceso">
         <option>Público</option>
         <option>Privado (con código)</option>
       </select>
 
       <label>Monto de entrada</label>
-      <input type="number" placeholder="$0 si es gratis">
+      <input type="number" id="monto" placeholder="$0 si es gratis">
 
       <label>Fecha límite</label>
-      <input type="datetime-local">
+      <input type="datetime-local" id="fechaLimite">
 
       <label>Reglas</label>
-      <textarea rows="3" placeholder="Describe las reglas de tu grupo..."></textarea>
+      <textarea id="reglas" rows="3" placeholder="Describe las reglas de tu grupo..."></textarea>
 
       <div class="modal-buttons">
-        <button class="btn-ok" onclick="cerrarModal()">Crear Grupo</button>
+        <button class="btn-ok" onclick="crearGrupo()">Crear Grupo</button>
         <button class="btn-cancel" onclick="cerrarModal()">Cancelar</button>
       </div>
     </div>
@@ -215,6 +212,44 @@
     }
     function cerrarModal() {
       document.getElementById('modal').style.display = 'none';
+    }
+
+    function ingresarPronostico() {
+      window.location.href = "indexdos.html";
+    }
+
+    function crearGrupo() {
+      const nombre = document.getElementById("nombreGrupo").value.trim();
+      const acceso = document.getElementById("tipoAcceso").value;
+      const monto = document.getElementById("monto").value || "Gratis";
+      const fecha = document.getElementById("fechaLimite").value;
+      const reglas = document.getElementById("reglas").value.trim();
+
+      if (nombre === "") {
+        alert("Debes poner un nombre para el grupo");
+        return;
+      }
+
+      // Crear tarjeta
+      const nuevoGrupo = document.createElement("div");
+      nuevoGrupo.classList.add("grupo-card");
+      nuevoGrupo.innerHTML = `
+        <h3>${nombre}</h3>
+        <p><b>Creador:</b> Tú</p>
+        <p><b>Acceso:</b> ${acceso}</p>
+        <p><b>Monto:</b> ${monto}</p>
+        <p><b>Fecha límite:</b> ${fecha || "No definida"}</p>
+        <button onclick="ingresarPronostico()">Ingresar Pronóstico</button>
+      `;
+
+      document.getElementById("gruposLista").appendChild(nuevoGrupo);
+
+      // Limpiar formulario y cerrar modal
+      document.getElementById("nombreGrupo").value = "";
+      document.getElementById("monto").value = "";
+      document.getElementById("fechaLimite").value = "";
+      document.getElementById("reglas").value = "";
+      cerrarModal();
     }
   </script>
 
