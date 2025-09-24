@@ -137,15 +137,6 @@
 
   <!-- Lógica de autenticación -->
   <script>
-    const auth = firebase.auth();
-
-    // ✅ Redirigir si ya está logueado
-    auth.onAuthStateChanged((user) => {
-      if (user) {
-        window.location.href = "index.html";
-      }
-    });
-
     // Login con correo y contraseña
     document.getElementById('login-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -155,8 +146,7 @@
       const messageDiv = document.getElementById('form-message');
 
       try {
-        await auth.signInWithEmailAndPassword(email, password);
-        // ✅ Redirige solo cuando Firebase confirma login
+        await firebase.auth().signInWithEmailAndPassword(email, password);
         window.location.href = "index.html";
       } catch (error) {
         let errorMessage;
@@ -187,7 +177,8 @@
       const provider = new firebase.auth.GoogleAuthProvider();
 
       try {
-        await auth.signInWithPopup(provider);
+        const result = await firebase.auth().signInWithPopup(provider);
+        const user = result.user;
         window.location.href = "index.html";
       } catch (error) {
         alert("Error al iniciar sesión con Google: " + error.message);
